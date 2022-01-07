@@ -52,21 +52,47 @@ public class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl {
     private static final long MAX_ALIGN_4 = 4;
     private static final long MAX_ALIGN_8 = 8;
 
+    static final int BYTE_KIND = 1;
+    static final int CHAR_KIND = 2;
+    static final int SHORT_KIND = 3;
+    static final int INT_KIND = 4;
+    static final int FLOAT_KIND = 5;
+    static final int LONG_KIND = 6;
+    static final int DOUBLE_KIND = 7;
+
     final long offset;
     final H base;
-    final long maxAlignMask;
+    final int kind;
 
     @ForceInline
-    HeapMemorySegmentImpl(long maxAlignMask, long offset, H base, long length, int mask) {
+    HeapMemorySegmentImpl(int kind, long offset, H base, long length, int mask) {
         super(length, mask, ResourceScopeImpl.GLOBAL);
-        this.maxAlignMask = maxAlignMask;
+        this.kind = kind;
         this.offset = offset;
         this.base = base;
     }
 
     @Override
+    @ForceInline
+    @SuppressWarnings("unchecked")
     final H base() {
-        return base;
+        switch (kind) {
+            case BYTE_KIND:
+                return (H) byte[].class.cast(Objects.requireNonNull(base));
+            case CHAR_KIND:
+                return (H) char[].class.cast(Objects.requireNonNull(base));
+            case SHORT_KIND:
+                return (H)short[].class.cast(Objects.requireNonNull(base));
+            case INT_KIND:
+                return (H)int[].class.cast(Objects.requireNonNull(base));
+            case FLOAT_KIND:
+                return (H) float[].class.cast(Objects.requireNonNull(base));
+            case LONG_KIND:
+                return (H)long[].class.cast(Objects.requireNonNull(base));
+            case DOUBLE_KIND:
+                return (H)double[].class.cast(Objects.requireNonNull(base));
+        }
+        throw new AssertionError();
     }
 
     @Override
@@ -76,12 +102,25 @@ public class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl {
 
     @Override
     final HeapMemorySegmentImpl<H> dup(long offset, long size, int mask, ResourceScopeImpl scope) {
-        return new HeapMemorySegmentImpl<>(maxAlignMask, this.offset + offset, base, size, mask);
+        return new HeapMemorySegmentImpl<>(kind, this.offset + offset, base, size, mask);
     }
 
     @Override
     public long maxAlignMask() {
-        return maxAlignMask;
+        switch (kind) {
+            case BYTE_KIND:
+                return MAX_ALIGN_1;
+            case CHAR_KIND:
+            case SHORT_KIND:
+                return MAX_ALIGN_2;
+            case INT_KIND:
+            case FLOAT_KIND:
+                return MAX_ALIGN_4;
+            case LONG_KIND:
+            case DOUBLE_KIND:
+                return MAX_ALIGN_8;
+        }
+        throw new AssertionError();
     }
 
     @Override
@@ -100,7 +139,7 @@ public class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl {
         public static MemorySegment fromArray(byte[] arr) {
             Objects.requireNonNull(arr);
             long byteSize = (long)arr.length * Unsafe.ARRAY_BYTE_INDEX_SCALE;
-            return new HeapMemorySegmentImpl<>(MAX_ALIGN_1, Unsafe.ARRAY_BYTE_BASE_OFFSET, arr, byteSize, defaultAccessModes(byteSize));
+            return new HeapMemorySegmentImpl<>(BYTE_KIND, Unsafe.ARRAY_BYTE_BASE_OFFSET, arr, byteSize, defaultAccessModes(byteSize));
         }
     }
 
@@ -109,7 +148,7 @@ public class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl {
         public static MemorySegment fromArray(char[] arr) {
             Objects.requireNonNull(arr);
             long byteSize = (long)arr.length * Unsafe.ARRAY_CHAR_INDEX_SCALE;
-            return new HeapMemorySegmentImpl<>(MAX_ALIGN_2, Unsafe.ARRAY_CHAR_BASE_OFFSET, arr, byteSize, defaultAccessModes(byteSize));
+            return new HeapMemorySegmentImpl<>(CHAR_KIND, Unsafe.ARRAY_CHAR_BASE_OFFSET, arr, byteSize, defaultAccessModes(byteSize));
         }
     }
 
@@ -118,7 +157,7 @@ public class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl {
         public static MemorySegment fromArray(short[] arr) {
             Objects.requireNonNull(arr);
             long byteSize = (long)arr.length * Unsafe.ARRAY_SHORT_INDEX_SCALE;
-            return new HeapMemorySegmentImpl<>(MAX_ALIGN_2, Unsafe.ARRAY_SHORT_BASE_OFFSET, arr, byteSize, defaultAccessModes(byteSize));
+            return new HeapMemorySegmentImpl<>(SHORT_KIND, Unsafe.ARRAY_SHORT_BASE_OFFSET, arr, byteSize, defaultAccessModes(byteSize));
         }
     }
 
@@ -127,7 +166,7 @@ public class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl {
         public static MemorySegment fromArray(int[] arr) {
             Objects.requireNonNull(arr);
             long byteSize = (long)arr.length * Unsafe.ARRAY_INT_INDEX_SCALE;
-            return new HeapMemorySegmentImpl<>(MAX_ALIGN_4, Unsafe.ARRAY_INT_BASE_OFFSET, arr, byteSize, defaultAccessModes(byteSize));
+            return new HeapMemorySegmentImpl<>(INT_KIND, Unsafe.ARRAY_INT_BASE_OFFSET, arr, byteSize, defaultAccessModes(byteSize));
         }
     }
 
@@ -136,7 +175,7 @@ public class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl {
         public static MemorySegment fromArray(long[] arr) {
             Objects.requireNonNull(arr);
             long byteSize = (long)arr.length * Unsafe.ARRAY_LONG_INDEX_SCALE;
-            return new HeapMemorySegmentImpl<>(MAX_ALIGN_8, Unsafe.ARRAY_LONG_BASE_OFFSET, arr, byteSize, defaultAccessModes(byteSize));
+            return new HeapMemorySegmentImpl<>(LONG_KIND, Unsafe.ARRAY_LONG_BASE_OFFSET, arr, byteSize, defaultAccessModes(byteSize));
         }
     }
 
@@ -145,7 +184,7 @@ public class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl {
         public static MemorySegment fromArray(float[] arr) {
             Objects.requireNonNull(arr);
             long byteSize = (long)arr.length * Unsafe.ARRAY_FLOAT_INDEX_SCALE;
-            return new HeapMemorySegmentImpl<>(MAX_ALIGN_4, Unsafe.ARRAY_FLOAT_BASE_OFFSET, arr, byteSize, defaultAccessModes(byteSize));
+            return new HeapMemorySegmentImpl<>(FLOAT_KIND, Unsafe.ARRAY_FLOAT_BASE_OFFSET, arr, byteSize, defaultAccessModes(byteSize));
         }
     }
 
@@ -154,7 +193,7 @@ public class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl {
         public static MemorySegment fromArray(double[] arr) {
             Objects.requireNonNull(arr);
             long byteSize = (long)arr.length * Unsafe.ARRAY_DOUBLE_INDEX_SCALE;
-            return new HeapMemorySegmentImpl<>(MAX_ALIGN_8, Unsafe.ARRAY_DOUBLE_BASE_OFFSET, arr, byteSize, defaultAccessModes(byteSize));
+            return new HeapMemorySegmentImpl<>(DOUBLE_KIND, Unsafe.ARRAY_DOUBLE_BASE_OFFSET, arr, byteSize, defaultAccessModes(byteSize));
         }
     }
 

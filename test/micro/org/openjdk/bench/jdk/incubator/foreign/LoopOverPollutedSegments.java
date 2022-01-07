@@ -58,7 +58,7 @@ public class LoopOverPollutedSegments {
 
     static final Unsafe unsafe = Utils.unsafe;
 
-    MemorySegment nativeSegment, heapSegmentBytes, heapSegmentFloats;
+    MemorySegment nativeSegment, heapSegmentBytes, heapSegmentFloats, heapSegmentInts;
     byte[] arr;
     long addr;
 
@@ -75,6 +75,7 @@ public class LoopOverPollutedSegments {
         nativeSegment = MemorySegment.allocateNative(ALLOC_SIZE, 4, ResourceScope.newConfinedScope());
         heapSegmentBytes = MemorySegment.ofArray(new byte[ALLOC_SIZE]);
         heapSegmentFloats = MemorySegment.ofArray(new float[ELEM_SIZE]);
+        heapSegmentInts = MemorySegment.ofArray(new int[ELEM_SIZE]);
 
         for (int rep = 0 ; rep < 5 ; rep++) {
             for (int i = 0; i < ELEM_SIZE; i++) {
@@ -87,6 +88,8 @@ public class LoopOverPollutedSegments {
                 intHandle.set(heapSegmentBytes, (long)i, i);
                 heapSegmentFloats.setAtIndex(JAVA_INT, i, i);
                 heapSegmentFloats.setAtIndex(JAVA_FLOAT, i, i);
+                heapSegmentInts.setAtIndex(JAVA_INT, i, i);
+                heapSegmentInts.setAtIndex(JAVA_FLOAT, i, i);
                 intHandle.set(heapSegmentFloats, (long)i, i);
             }
         }
@@ -124,7 +127,7 @@ public class LoopOverPollutedSegments {
     }
 
     @Benchmark
-    public int heap_segment_ints_VH() {
+    public int heap_segment_bytes_VH() {
         int sum = 0;
         for (int k = 0; k < ELEM_SIZE; k++) {
             intHandle.set(heapSegmentBytes, (long)k, k + 1);
@@ -135,11 +138,33 @@ public class LoopOverPollutedSegments {
     }
 
     @Benchmark
-    public int heap_segment_ints_instance() {
+    public int heap_segment_bytes_instance() {
         int sum = 0;
         for (int k = 0; k < ELEM_SIZE; k++) {
             heapSegmentBytes.setAtIndex(JAVA_INT, k, k + 1);
             int v = heapSegmentBytes.getAtIndex(JAVA_INT, k);
+            sum += v;
+        }
+        return sum;
+    }
+
+    @Benchmark
+    public int heap_segment_ints_VH() {
+        int sum = 0;
+        for (int k = 0; k < ELEM_SIZE; k++) {
+            intHandle.set(heapSegmentInts, (long)k, k + 1);
+            int v = (int) intHandle.get(heapSegmentInts, (long)k);
+            sum += v;
+        }
+        return sum;
+    }
+
+    @Benchmark
+    public int heap_segment_ints_instance() {
+        int sum = 0;
+        for (int k = 0; k < ELEM_SIZE; k++) {
+            heapSegmentInts.setAtIndex(JAVA_INT, k, k + 1);
+            int v = heapSegmentInts.getAtIndex(JAVA_INT, k);
             sum += v;
         }
         return sum;
