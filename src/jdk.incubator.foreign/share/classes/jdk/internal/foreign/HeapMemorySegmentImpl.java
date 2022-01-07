@@ -76,7 +76,7 @@ public class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl {
 
     @Override
     final HeapMemorySegmentImpl<H> dup(long offset, long size, int mask, ResourceScopeImpl scope) {
-        return new HeapMemorySegmentImpl<>(maxAlignMask, offset, base, length, mask);
+        return new HeapMemorySegmentImpl<>(maxAlignMask, this.offset + offset, base, size, mask);
     }
 
     @Override
