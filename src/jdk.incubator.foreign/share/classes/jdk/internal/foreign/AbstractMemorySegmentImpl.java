@@ -555,7 +555,7 @@ public abstract non-sealed class AbstractMemorySegmentImpl extends MemorySegment
             modes |= READ_ONLY;
         }
         if (base != null) {
-            return new HeapMemorySegmentImpl.OfByte(bbAddress + pos, (byte[])base, size, modes);
+            return new HeapMemorySegmentImpl<>(1, bbAddress + pos, (byte[])base, size, modes);
         } else if (unmapper == null) {
             return new NativeMemorySegmentImpl(bbAddress + pos, size, modes, bufferScope);
         } else {
