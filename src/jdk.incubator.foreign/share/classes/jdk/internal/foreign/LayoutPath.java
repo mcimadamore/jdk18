@@ -163,7 +163,7 @@ public class LayoutPath {
         perms.addFirst(0);
         expectedCoordinates.add(MemorySegment.class);
 
-        VarHandle handle = Utils.makeMemoryAccessVarHandle(valueLayout, true);
+        VarHandle handle = Utils.makeMemoryAccessVarHandle(valueLayout);
 
         for (int i = 0 ; i < strides.length ; i++) {
             expectedCoordinates.add(long.class);
@@ -350,7 +350,6 @@ public class LayoutPath {
     }
 
     private static long addStride(MemorySegment segment, long stride, long base, long index) {
-        return MemorySegmentProxy.addOffsets(base,
-                    MemorySegmentProxy.multiplyOffsets(stride, index, ((MemorySegmentProxy)segment)), (MemorySegmentProxy)segment);
+        return base + (stride * index);
     }
 }
