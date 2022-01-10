@@ -118,7 +118,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public int get(ValueLayout.OfInt layout, long offset) {
             checkAccess(offset, 4, true);
             return SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
-                    base,
+                    byte[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     layout.order() == ByteOrder.BIG_ENDIAN);
         }
@@ -128,7 +128,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public void set(ValueLayout.OfInt layout, long offset, int value) {
             checkAccess(offset, 4, false);
             SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
-                    base,
+                    byte[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     value,
                     layout.order() == ByteOrder.BIG_ENDIAN);
@@ -151,7 +151,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public float get(ValueLayout.OfFloat layout, long offset) {
             checkAccess(offset, 4, true);
             int rawValue = SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
-                    base,
+                    byte[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     layout.order() == ByteOrder.BIG_ENDIAN);
             return Float.intBitsToFloat(rawValue);
@@ -162,7 +162,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public void set(ValueLayout.OfFloat layout, long offset, float value) {
             checkAccess(offset, 4, false);
             SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
-                    base,
+                    byte[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     Float.floatToRawIntBits(value),
                     layout.order() == ByteOrder.BIG_ENDIAN);
@@ -223,7 +223,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public int get(ValueLayout.OfInt layout, long offset) {
             checkAccess(offset, 4, true);
             return SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
-                    base,
+                    char[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     layout.order() == ByteOrder.BIG_ENDIAN);
         }
@@ -233,7 +233,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public void set(ValueLayout.OfInt layout, long offset, int value) {
             checkAccess(offset, 4, false);
             SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
-                    base,
+                    char[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     value,
                     layout.order() == ByteOrder.BIG_ENDIAN);
@@ -256,7 +256,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public float get(ValueLayout.OfFloat layout, long offset) {
             checkAccess(offset, 4, true);
             int rawValue = SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
-                    base,
+                    char[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     layout.order() == ByteOrder.BIG_ENDIAN);
             return Float.intBitsToFloat(rawValue);
@@ -267,7 +267,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public void set(ValueLayout.OfFloat layout, long offset, float value) {
             checkAccess(offset, 4, false);
             SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
-                    base,
+                    char[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     Float.floatToRawIntBits(value),
                     layout.order() == ByteOrder.BIG_ENDIAN);
@@ -328,7 +328,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public int get(ValueLayout.OfInt layout, long offset) {
             checkAccess(offset, 4, true);
             return SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
-                    base,
+                    short[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     layout.order() == ByteOrder.BIG_ENDIAN);
         }
@@ -338,7 +338,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public void set(ValueLayout.OfInt layout, long offset, int value) {
             checkAccess(offset, 4, false);
             SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
-                    base,
+                    short[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     value,
                     layout.order() == ByteOrder.BIG_ENDIAN);
@@ -361,7 +361,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public float get(ValueLayout.OfFloat layout, long offset) {
             checkAccess(offset, 4, true);
             int rawValue = SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
-                    base,
+                    short[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     layout.order() == ByteOrder.BIG_ENDIAN);
             return Float.intBitsToFloat(rawValue);
@@ -372,7 +372,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public void set(ValueLayout.OfFloat layout, long offset, float value) {
             checkAccess(offset, 4, false);
             SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
-                    base,
+                    short[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     Float.floatToRawIntBits(value),
                     layout.order() == ByteOrder.BIG_ENDIAN);
@@ -433,7 +433,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public int get(ValueLayout.OfInt layout, long offset) {
             checkAccess(offset, 4, true);
             return SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
-                    base,
+                    int[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     layout.order() == ByteOrder.BIG_ENDIAN);
         }
@@ -443,7 +443,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public void set(ValueLayout.OfInt layout, long offset, int value) {
             checkAccess(offset, 4, false);
             SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
-                    base,
+                    int[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     value,
                     layout.order() == ByteOrder.BIG_ENDIAN);
@@ -466,7 +466,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public float get(ValueLayout.OfFloat layout, long offset) {
             checkAccess(offset, 4, true);
             int rawValue = SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
-                    base,
+                    int[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     layout.order() == ByteOrder.BIG_ENDIAN);
             return Float.intBitsToFloat(rawValue);
@@ -477,7 +477,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public void set(ValueLayout.OfFloat layout, long offset, float value) {
             checkAccess(offset, 4, false);
             SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
-                    base,
+                    int[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     Float.floatToRawIntBits(value),
                     layout.order() == ByteOrder.BIG_ENDIAN);
@@ -538,7 +538,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public int get(ValueLayout.OfInt layout, long offset) {
             checkAccess(offset, 4, true);
             return SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
-                    base,
+                    long[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     layout.order() == ByteOrder.BIG_ENDIAN);
         }
@@ -548,7 +548,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public void set(ValueLayout.OfInt layout, long offset, int value) {
             checkAccess(offset, 4, false);
             SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
-                    base,
+                    long[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     value,
                     layout.order() == ByteOrder.BIG_ENDIAN);
@@ -571,7 +571,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public float get(ValueLayout.OfFloat layout, long offset) {
             checkAccess(offset, 4, true);
             int rawValue = SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
-                    base,
+                    long[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     layout.order() == ByteOrder.BIG_ENDIAN);
             return Float.intBitsToFloat(rawValue);
@@ -582,7 +582,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public void set(ValueLayout.OfFloat layout, long offset, float value) {
             checkAccess(offset, 4, false);
             SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
-                    base,
+                    long[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     Float.floatToRawIntBits(value),
                     layout.order() == ByteOrder.BIG_ENDIAN);
@@ -643,7 +643,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public int get(ValueLayout.OfInt layout, long offset) {
             checkAccess(offset, 4, true);
             return SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
-                    base,
+                    float[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     layout.order() == ByteOrder.BIG_ENDIAN);
         }
@@ -653,7 +653,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public void set(ValueLayout.OfInt layout, long offset, int value) {
             checkAccess(offset, 4, false);
             SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
-                    base,
+                    float[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     value,
                     layout.order() == ByteOrder.BIG_ENDIAN);
@@ -676,7 +676,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public float get(ValueLayout.OfFloat layout, long offset) {
             checkAccess(offset, 4, true);
             int rawValue = SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
-                    base,
+                    float[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     layout.order() == ByteOrder.BIG_ENDIAN);
             return Float.intBitsToFloat(rawValue);
@@ -687,7 +687,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public void set(ValueLayout.OfFloat layout, long offset, float value) {
             checkAccess(offset, 4, false);
             SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
-                    base,
+                    float[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     Float.floatToRawIntBits(value),
                     layout.order() == ByteOrder.BIG_ENDIAN);
@@ -748,7 +748,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public int get(ValueLayout.OfInt layout, long offset) {
             checkAccess(offset, 4, true);
             return SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
-                    base,
+                    double[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     layout.order() == ByteOrder.BIG_ENDIAN);
         }
@@ -758,7 +758,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public void set(ValueLayout.OfInt layout, long offset, int value) {
             checkAccess(offset, 4, false);
             SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
-                    base,
+                    double[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     value,
                     layout.order() == ByteOrder.BIG_ENDIAN);
@@ -781,7 +781,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public float get(ValueLayout.OfFloat layout, long offset) {
             checkAccess(offset, 4, true);
             int rawValue = SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
-                    base,
+                    double[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     layout.order() == ByteOrder.BIG_ENDIAN);
             return Float.intBitsToFloat(rawValue);
@@ -792,7 +792,7 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public void set(ValueLayout.OfFloat layout, long offset, float value) {
             checkAccess(offset, 4, false);
             SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
-                    base,
+                    double[].class.cast(Objects.requireNonNull(base)),
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     Float.floatToRawIntBits(value),
                     layout.order() == ByteOrder.BIG_ENDIAN);
