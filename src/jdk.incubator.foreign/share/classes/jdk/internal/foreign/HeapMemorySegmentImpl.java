@@ -168,6 +168,18 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
                     layout.order() == ByteOrder.BIG_ENDIAN);
         }
 
+        @Override
+        @ForceInline
+        public float getAtIndex(ValueLayout.OfFloat layout, long index) {
+            return get(layout, index * 4);
+        }
+
+        @Override
+        @ForceInline
+        public void setAtIndex(ValueLayout.OfFloat layout, long index, float value) {
+            set(layout, index * 4, value);
+        }
+
         @ForceInline
         long offsetNoVMAlignCheck(long offset, long alignment) {
             long base = this.offset;
@@ -259,6 +271,18 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     Float.floatToRawIntBits(value),
                     layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public float getAtIndex(ValueLayout.OfFloat layout, long index) {
+            return get(layout, index * 4);
+        }
+
+        @Override
+        @ForceInline
+        public void setAtIndex(ValueLayout.OfFloat layout, long index, float value) {
+            set(layout, index * 4, value);
         }
 
         @ForceInline
@@ -354,6 +378,18 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
                     layout.order() == ByteOrder.BIG_ENDIAN);
         }
 
+        @Override
+        @ForceInline
+        public float getAtIndex(ValueLayout.OfFloat layout, long index) {
+            return get(layout, index * 4);
+        }
+
+        @Override
+        @ForceInline
+        public void setAtIndex(ValueLayout.OfFloat layout, long index, float value) {
+            set(layout, index * 4, value);
+        }
+
         @ForceInline
         long offsetNoVMAlignCheck(long offset, long alignmentMask) {
             long base = this.offset;
@@ -445,6 +481,18 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     Float.floatToRawIntBits(value),
                     layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public float getAtIndex(ValueLayout.OfFloat layout, long index) {
+            return get(layout, index * 4);
+        }
+
+        @Override
+        @ForceInline
+        public void setAtIndex(ValueLayout.OfFloat layout, long index, float value) {
+            set(layout, index * 4, value);
         }
 
         @ForceInline
@@ -540,6 +588,18 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
                     layout.order() == ByteOrder.BIG_ENDIAN);
         }
 
+        @Override
+        @ForceInline
+        public float getAtIndex(ValueLayout.OfFloat layout, long index) {
+            return get(layout, index * 4);
+        }
+
+        @Override
+        @ForceInline
+        public void setAtIndex(ValueLayout.OfFloat layout, long index, float value) {
+            set(layout, index * 4, value);
+        }
+
         @ForceInline
         long offsetNoVMAlignCheck(long offset, long alignmentMask) {
             long base = this.offset;
@@ -631,6 +691,18 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
                     offsetNoVMAlignCheck(offset, layout.byteAlignment()),
                     Float.floatToRawIntBits(value),
                     layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public float getAtIndex(ValueLayout.OfFloat layout, long index) {
+            return get(layout, index * 4);
+        }
+
+        @Override
+        @ForceInline
+        public void setAtIndex(ValueLayout.OfFloat layout, long index, float value) {
+            set(layout, index * 4, value);
         }
 
         @ForceInline
