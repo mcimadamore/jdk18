@@ -27,12 +27,14 @@
 package jdk.internal.foreign;
 
 import jdk.incubator.foreign.MemorySegment;
+import jdk.incubator.foreign.ValueLayout;
 import jdk.internal.access.JavaNioAccess;
 import jdk.internal.access.SharedSecrets;
 import jdk.internal.misc.Unsafe;
 import jdk.internal.vm.annotation.ForceInline;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Objects;
 
 /**
@@ -110,6 +112,71 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public long maxAlignMask() {
             return MAX_ALIGN_1;
         }
+
+        @Override
+        @ForceInline
+        public int get(ValueLayout.OfInt layout, long offset) {
+            checkAccess(offset, 4, true);
+            return SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public void set(ValueLayout.OfInt layout, long offset, int value) {
+            checkAccess(offset, 4, false);
+            SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    value,
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public int getAtIndex(ValueLayout.OfInt layout, long index) {
+            return get(layout, index * 4);
+        }
+
+        @Override
+        @ForceInline
+        public void setAtIndex(ValueLayout.OfInt layout, long index, int value) {
+            set(layout, index * 4, value);
+        }
+
+        @Override
+        @ForceInline
+        public float get(ValueLayout.OfFloat layout, long offset) {
+            checkAccess(offset, 4, true);
+            int rawValue = SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+            return Float.intBitsToFloat(rawValue);
+        }
+
+        @Override
+        @ForceInline
+        public void set(ValueLayout.OfFloat layout, long offset, float value) {
+            checkAccess(offset, 4, false);
+            SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    Float.floatToRawIntBits(value),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @ForceInline
+        long offsetNoVMAlignCheck(long offset, long alignment) {
+            long base = this.offset;
+            long address = base + offset;
+            if (((address | maxAlignMask()) & (alignment - 1)) != 0) {
+                throw new IllegalArgumentException("Misaligned access at address: " + address);
+            }
+            return address;
+        }
     }
 
     public static class OfChar extends HeapMemorySegmentImpl<char[]> {
@@ -137,6 +204,71 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         @Override
         public long maxAlignMask() {
             return MAX_ALIGN_2;
+        }
+
+        @Override
+        @ForceInline
+        public int get(ValueLayout.OfInt layout, long offset) {
+            checkAccess(offset, 4, true);
+            return SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public void set(ValueLayout.OfInt layout, long offset, int value) {
+            checkAccess(offset, 4, false);
+            SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    value,
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public int getAtIndex(ValueLayout.OfInt layout, long index) {
+            return get(layout, index * 4);
+        }
+
+        @Override
+        @ForceInline
+        public void setAtIndex(ValueLayout.OfInt layout, long index, int value) {
+            set(layout, index * 4, value);
+        }
+
+        @Override
+        @ForceInline
+        public float get(ValueLayout.OfFloat layout, long offset) {
+            checkAccess(offset, 4, true);
+            int rawValue = SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+            return Float.intBitsToFloat(rawValue);
+        }
+
+        @Override
+        @ForceInline
+        public void set(ValueLayout.OfFloat layout, long offset, float value) {
+            checkAccess(offset, 4, false);
+            SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    Float.floatToRawIntBits(value),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @ForceInline
+        long offsetNoVMAlignCheck(long offset, long alignmentMask) {
+            long base = this.offset;
+            long address = base + offset;
+            if (((address | maxAlignMask()) & (alignmentMask - 1)) != 0) {
+                throw new IllegalArgumentException("Misaligned access at address: " + address);
+            }
+            return address;
         }
     }
 
@@ -166,6 +298,71 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public long maxAlignMask() {
             return MAX_ALIGN_2;
         }
+
+        @Override
+        @ForceInline
+        public int get(ValueLayout.OfInt layout, long offset) {
+            checkAccess(offset, 4, true);
+            return SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public void set(ValueLayout.OfInt layout, long offset, int value) {
+            checkAccess(offset, 4, false);
+            SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    value,
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public int getAtIndex(ValueLayout.OfInt layout, long index) {
+            return get(layout, index * 4);
+        }
+
+        @Override
+        @ForceInline
+        public void setAtIndex(ValueLayout.OfInt layout, long index, int value) {
+            set(layout, index * 4, value);
+        }
+
+        @Override
+        @ForceInline
+        public float get(ValueLayout.OfFloat layout, long offset) {
+            checkAccess(offset, 4, true);
+            int rawValue = SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+            return Float.intBitsToFloat(rawValue);
+        }
+
+        @Override
+        @ForceInline
+        public void set(ValueLayout.OfFloat layout, long offset, float value) {
+            checkAccess(offset, 4, false);
+            SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    Float.floatToRawIntBits(value),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @ForceInline
+        long offsetNoVMAlignCheck(long offset, long alignmentMask) {
+            long base = this.offset;
+            long address = base + offset;
+            if (((address | maxAlignMask()) & (alignmentMask - 1)) != 0) {
+                throw new IllegalArgumentException("Misaligned access at address: " + address);
+            }
+            return address;
+        }
     }
 
     public static class OfInt extends HeapMemorySegmentImpl<int[]> {
@@ -193,6 +390,71 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         @Override
         public long maxAlignMask() {
             return MAX_ALIGN_4;
+        }
+
+        @Override
+        @ForceInline
+        public int get(ValueLayout.OfInt layout, long offset) {
+            checkAccess(offset, 4, true);
+            return SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public void set(ValueLayout.OfInt layout, long offset, int value) {
+            checkAccess(offset, 4, false);
+            SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    value,
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public int getAtIndex(ValueLayout.OfInt layout, long index) {
+            return get(layout, index * 4);
+        }
+
+        @Override
+        @ForceInline
+        public void setAtIndex(ValueLayout.OfInt layout, long index, int value) {
+            set(layout, index * 4, value);
+        }
+
+        @Override
+        @ForceInline
+        public float get(ValueLayout.OfFloat layout, long offset) {
+            checkAccess(offset, 4, true);
+            int rawValue = SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+            return Float.intBitsToFloat(rawValue);
+        }
+
+        @Override
+        @ForceInline
+        public void set(ValueLayout.OfFloat layout, long offset, float value) {
+            checkAccess(offset, 4, false);
+            SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    Float.floatToRawIntBits(value),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @ForceInline
+        long offsetNoVMAlignCheck(long offset, long alignmentMask) {
+            long base = this.offset;
+            long address = base + offset;
+            if (((address | maxAlignMask()) & (alignmentMask - 1)) != 0) {
+                throw new IllegalArgumentException("Misaligned access at address: " + address);
+            }
+            return address;
         }
     }
 
@@ -222,6 +484,71 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public long maxAlignMask() {
             return MAX_ALIGN_8;
         }
+
+        @Override
+        @ForceInline
+        public int get(ValueLayout.OfInt layout, long offset) {
+            checkAccess(offset, 4, true);
+            return SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public void set(ValueLayout.OfInt layout, long offset, int value) {
+            checkAccess(offset, 4, false);
+            SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    value,
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public int getAtIndex(ValueLayout.OfInt layout, long index) {
+            return get(layout, index * 4);
+        }
+
+        @Override
+        @ForceInline
+        public void setAtIndex(ValueLayout.OfInt layout, long index, int value) {
+            set(layout, index * 4, value);
+        }
+
+        @Override
+        @ForceInline
+        public float get(ValueLayout.OfFloat layout, long offset) {
+            checkAccess(offset, 4, true);
+            int rawValue = SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+            return Float.intBitsToFloat(rawValue);
+        }
+
+        @Override
+        @ForceInline
+        public void set(ValueLayout.OfFloat layout, long offset, float value) {
+            checkAccess(offset, 4, false);
+            SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    Float.floatToRawIntBits(value),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @ForceInline
+        long offsetNoVMAlignCheck(long offset, long alignmentMask) {
+            long base = this.offset;
+            long address = base + offset;
+            if (((address | maxAlignMask()) & (alignmentMask - 1)) != 0) {
+                throw new IllegalArgumentException("Misaligned access at address: " + address);
+            }
+            return address;
+        }
     }
 
     public static class OfFloat extends HeapMemorySegmentImpl<float[]> {
@@ -250,6 +577,71 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         public long maxAlignMask() {
             return MAX_ALIGN_4;
         }
+
+        @Override
+        @ForceInline
+        public int get(ValueLayout.OfInt layout, long offset) {
+            checkAccess(offset, 4, true);
+            return SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public void set(ValueLayout.OfInt layout, long offset, int value) {
+            checkAccess(offset, 4, false);
+            SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    value,
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public int getAtIndex(ValueLayout.OfInt layout, long index) {
+            return get(layout, index * 4);
+        }
+
+        @Override
+        @ForceInline
+        public void setAtIndex(ValueLayout.OfInt layout, long index, int value) {
+            set(layout, index * 4, value);
+        }
+
+        @Override
+        @ForceInline
+        public float get(ValueLayout.OfFloat layout, long offset) {
+            checkAccess(offset, 4, true);
+            int rawValue = SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+            return Float.intBitsToFloat(rawValue);
+        }
+
+        @Override
+        @ForceInline
+        public void set(ValueLayout.OfFloat layout, long offset, float value) {
+            checkAccess(offset, 4, false);
+            SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    Float.floatToRawIntBits(value),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @ForceInline
+        long offsetNoVMAlignCheck(long offset, long alignmentMask) {
+            long base = this.offset;
+            long address = base + offset;
+            if (((address | maxAlignMask()) & (alignmentMask - 1)) != 0) {
+                throw new IllegalArgumentException("Misaligned access at address: " + address);
+            }
+            return address;
+        }
     }
 
     public static class OfDouble extends HeapMemorySegmentImpl<double[]> {
@@ -277,6 +669,83 @@ public abstract class HeapMemorySegmentImpl<H> extends AbstractMemorySegmentImpl
         @Override
         public long maxAlignMask() {
             return MAX_ALIGN_8;
+        }
+
+        @Override
+        @ForceInline
+        public int get(ValueLayout.OfInt layout, long offset) {
+            checkAccess(offset, 4, true);
+            return SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public void set(ValueLayout.OfInt layout, long offset, int value) {
+            checkAccess(offset, 4, false);
+            SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    value,
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public int getAtIndex(ValueLayout.OfInt layout, long index) {
+            return get(layout, index * 4);
+        }
+
+        @Override
+        @ForceInline
+        public void setAtIndex(ValueLayout.OfInt layout, long index, int value) {
+            set(layout, index * 4, value);
+        }
+
+        @Override
+        @ForceInline
+        public float get(ValueLayout.OfFloat layout, long offset) {
+            checkAccess(offset, 4, true);
+            int rawValue = SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+            return Float.intBitsToFloat(rawValue);
+        }
+
+        @Override
+        @ForceInline
+        public void set(ValueLayout.OfFloat layout, long offset, float value) {
+            checkAccess(offset, 4, false);
+            SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
+                    base,
+                    offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                    Float.floatToRawIntBits(value),
+                    layout.order() == ByteOrder.BIG_ENDIAN);
+        }
+
+        @Override
+        @ForceInline
+        public float getAtIndex(ValueLayout.OfFloat layout, long index) {
+            return get(layout, index * 4);
+        }
+
+        @Override
+        @ForceInline
+        public void setAtIndex(ValueLayout.OfFloat layout, long index, float value) {
+            set(layout, index * 4, value);
+        }
+
+        @ForceInline
+        long offsetNoVMAlignCheck(long offset, long alignmentMask) {
+            long base = this.offset;
+            long address = base + offset;
+            if (((address | maxAlignMask()) & (alignmentMask - 1)) != 0) {
+                throw new IllegalArgumentException("Misaligned access at address: " + address);
+            }
+            return address;
         }
     }
 

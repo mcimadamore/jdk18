@@ -28,12 +28,14 @@ package jdk.internal.foreign;
 
 import jdk.incubator.foreign.MemoryAddress;
 import jdk.incubator.foreign.MemorySegment;
+import jdk.incubator.foreign.ValueLayout;
 import jdk.internal.misc.Unsafe;
 import jdk.internal.misc.VM;
 import jdk.internal.vm.annotation.ForceInline;
 import sun.security.action.GetBooleanAction;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * Implementation for native memory segments. A native memory segment is essentially a wrapper around
@@ -135,5 +137,82 @@ public class NativeMemorySegmentImpl extends AbstractMemorySegmentImpl {
         scope.checkValidStateSlow();
         AbstractMemorySegmentImpl segment = new NativeMemorySegmentImpl(min.toRawLongValue(), bytesSize, defaultAccessModes(bytesSize), scope);
         return segment;
+    }
+
+    @Override
+    @ForceInline
+    public int get(ValueLayout.OfInt layout, long offset) {
+        checkAccess(offset, 4, true);
+        return SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
+                null,
+                offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                layout.order() == ByteOrder.BIG_ENDIAN);
+    }
+
+    @Override
+    @ForceInline
+    public void set(ValueLayout.OfInt layout, long offset, int value) {
+        checkAccess(offset, 4, false);
+        SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
+                null,
+                offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                value,
+                layout.order() == ByteOrder.BIG_ENDIAN);
+    }
+
+    @Override
+    @ForceInline
+    public int getAtIndex(ValueLayout.OfInt layout, long index) {
+        return get(layout, index * 4);
+    }
+
+    @Override
+    @ForceInline
+    public void setAtIndex(ValueLayout.OfInt layout, long index, int value) {
+        set(layout, index * 4, value);
+    }
+
+    @Override
+    @ForceInline
+    public float get(ValueLayout.OfFloat layout, long offset) {
+        checkAccess(offset, 4, true);
+        int rawValue = SCOPED_MEMORY_ACCESS.getIntUnaligned(scope,
+                null,
+                offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                layout.order() == ByteOrder.BIG_ENDIAN);
+        return Float.intBitsToFloat(rawValue);
+    }
+
+    @Override
+    @ForceInline
+    public void set(ValueLayout.OfFloat layout, long offset, float value) {
+        checkAccess(offset, 4, false);
+        SCOPED_MEMORY_ACCESS.putIntUnaligned(scope,
+                null,
+                offsetNoVMAlignCheck(offset, layout.byteAlignment()),
+                Float.floatToRawIntBits(value),
+                layout.order() == ByteOrder.BIG_ENDIAN);
+    }
+
+    @Override
+    @ForceInline
+    public float getAtIndex(ValueLayout.OfFloat layout, long index) {
+        return get(layout, index * 4);
+    }
+
+    @Override
+    @ForceInline
+    public void setAtIndex(ValueLayout.OfFloat layout, long index, float value) {
+        set(layout, index * 4, value);
+    }
+
+    @ForceInline
+    long offsetNoVMAlignCheck(long offset, long alignmentMask) {
+        long base = min;
+        long address = base + offset;
+        if ((address & (alignmentMask - 1)) != 0) {
+            throw new IllegalArgumentException("Misaligned access at address: " + address);
+        }
+        return address;
     }
 }

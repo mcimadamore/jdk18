@@ -57,7 +57,7 @@ import static jdk.incubator.foreign.ValueLayout.JAVA_BYTE;
  */
 public abstract non-sealed class AbstractMemorySegmentImpl extends MemorySegmentProxy implements MemorySegment, SegmentAllocator, Scoped {
 
-    private static final ScopedMemoryAccess SCOPED_MEMORY_ACCESS = ScopedMemoryAccess.getScopedMemoryAccess();
+    static final ScopedMemoryAccess SCOPED_MEMORY_ACCESS = ScopedMemoryAccess.getScopedMemoryAccess();
 
     private static final boolean enableSmallSegments =
             Boolean.parseBoolean(GetPropertyAction.privilegedGetProperty("jdk.incubator.foreign.SmallSegments", "true"));
